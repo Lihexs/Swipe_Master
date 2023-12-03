@@ -15,7 +15,7 @@ const Stack = createStackNavigator<Stack1ParamList>();
 
 const AuthCoordinator: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
@@ -24,3 +24,4 @@ const AuthCoordinator: React.FC = () => {
 };
 
 export default AuthCoordinator;
+

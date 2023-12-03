@@ -1,4 +1,3 @@
-// WelcomeScreenStyles.js
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -10,30 +9,19 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         borderRadius: 5,
     },
-    swipeText: {
-        color: 'white',
-        fontSize: 50,
-        fontWeight: '400',
-        marginBottom: 10,
-    },
-    masterText: {
-        color: 'white',
-        fontSize: 50,
-        fontWeight: '400',
-        marginBottom: 20,
-    },
-    button: {
-        backgroundColor: '#3498db',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginBottom: 10,
-    },
-    buttonText: {
+    descriptionText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 14,
         textAlign: 'center',
+        marginBottom: 20, // Adjust as needed
     },
+    logo: {
+        width: '90%',
+        height: undefined,
+        aspectRatio: 1,
+        marginBottom: 20,
+        resizeMode: 'contain'
+    }
 });
 
 export default styles;

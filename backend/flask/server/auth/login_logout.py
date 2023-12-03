@@ -5,7 +5,6 @@ from flask_caching import Cache
 from .utils import is_valid
 from db import mongo
 
-
 bcrypt = Bcrypt()
 
 online_users = []
@@ -33,27 +32,31 @@ def is_user_online(user):
 
 class Login(Resource):
     """
-    Resource for handling login requests using POST method.
+
     """
-    def post(self):  # Changed from get to post
+    def post(self):
         """
-        Handle a POST request for user login.
+
         """
         data = request.get_json()
 
         # Check if the required fields are provided in the request JSON
         if 'username' not in data or 'password' not in data:
-            return make_response(jsonify({'error': 'Username and password are required.'}), 400)
+            return jsonify({'message': 'Username and password are required.'}), 400
+
+        # Get username and password from the request
+        unsanitized_username = data['username']
+        unsanitized_password = data['password']
 
         # Sanitize and validate username and password
-        username = is_valid(data['username'])
-        password = is_valid(data['password'])
+        username = is_valid(unsanitized_username)
+        password = is_valid(unsanitized_password)
 
         if not username or not password:
             # If validation fails, return a general error message
             return make_response(jsonify({'error': 'Invalid username or password'}), 401)
-        
-        # Check if the username exists in the database
+
+        # Check if the username exists in the DB
         if mongo.Users.is_username_exists(data['username']):
             user = mongo.Users.get_user_by_username(username)
             user_id = user['user_id']

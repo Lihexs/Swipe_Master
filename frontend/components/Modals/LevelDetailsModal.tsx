@@ -1,8 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect, ReactNode } from 'react';
 import { View, Modal, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import LinearGradientBackground from '../../assets/Colors/BackgroundColorComponent';
-import StarRating from "../StarRating";
+import LinearGradientBackground from '../../views/Colors/BackgroundColorComponent';
+import StarRating from "../../views/StarRating";
 
 interface LevelDetailsModalProps {
     isVisible: boolean;
@@ -35,7 +35,7 @@ const LevelDetailsModal: React.ForwardRefRenderFunction<LevelDetailsModalHandle,
     return (
         <Modal
             transparent={true}
-            animationType="slide"
+            animationType="fade"
             visible={isVisible}
             onRequestClose={props.closeModal}
         >
@@ -43,6 +43,7 @@ const LevelDetailsModal: React.ForwardRefRenderFunction<LevelDetailsModalHandle,
                 <View style={styles.modalContent}>
                     <LinearGradientBackground>
                         <View style={styles.innerContent}>
+
                             <Text style={styles.whiteText}>Unlock</Text>
                             <Text style={[styles.whiteText, styles.marginBottom10]}>Level {props.levelNumber}</Text>
                             <Text style={[styles.whiteText, styles.marginBottom10]}>Number of Questions: 10</Text>

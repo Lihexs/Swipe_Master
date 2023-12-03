@@ -8,6 +8,7 @@ DEFAULT_MAX_SCORE = 100
 
 class Level:
     def __init__(self, level_index):
+        # Level Template
         self._level_index = level_index
         self._possible_difficulties = POSSIBLE_DIFFICULTIES
         self._level_time = 0
@@ -15,6 +16,8 @@ class Level:
         self._total_num_questions = DEFAULT_NUM_QUESTIONS
         self._max_lvl_score = DEFAULT_MAX_SCORE
         self._questions = DEFAULT_QUESTIONS
+
+        # Generate level
         self._create_lvl()
 
     # Getter and setter for level_index
@@ -78,16 +81,14 @@ class Level:
         return {
             'level_index': self._level_index,
             'level_time': self._level_time,
-            'difficulty_distribution': self._difficulty_distribution,
             'total_num_questions': self._total_num_questions,
             'max_lvl_score': self._max_lvl_score,
-            'questions': [
-                {key: value for key, value in question.items() if key not in ('_id', 'question_id')}
-                for question in self.questions
-            ]
+            'questions' : self._questions
         }
 
     def _create_lvl(self):
         if self._level_index == 0:  # Default lvl to test endpoint with one questions
             self._total_num_questions = 1
             self._difficulty_distribution = [100, 0, 0, 0, 0]
+
+        # todo create logic for rest of levels

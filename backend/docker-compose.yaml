@@ -8,21 +8,21 @@ services:
     stop_signal: SIGINT
 
     environment:
-      - SECRET_KEY=${MY_SECRET_KEY}
+      - SECRET_KEY=MY_SECRET_KEY
       - FLASK_SERVER_HOST=0.0.0.0
       - FLASK_SERVER_PORT=5000
       - FLASK_APP=server.py
       - FLASK_ENV=development
-      - CONFIG_MONGODB_ADMINUSERNAME=root
+      - CONFIG_MONGODB_ADMINUSERNAME=roots
       - CONFIG_MONGODB_ADMINPASSWORD=pass
       - CONFIG_MONGODB_URI=mongodb://root:pass@mongo:27017/
-      - CONFIG_MONGO_DATABASE_NAME=TriviaDB      
+      - CONFIG_MONGO_DATABASE_NAME=TriviaDB
     volumes:
       - ./flask:/server
     ports:
-      - 5000:5000      
+      - 5000:5000
     depends_on:
-      -  mongo          
+      -  mongo
   mongo:
     image: mongo
     ports:

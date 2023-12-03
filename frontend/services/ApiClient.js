@@ -1,4 +1,3 @@
-// Todo: Create input and output sanity checks and validation tests.
 // Todo: Add constants for magic numbers.
 // Todo: Check sanitize library 
 import bcrypt from 'bcryptjs';
@@ -13,6 +12,7 @@ const ENDPOINTS = {
     QUESTIONS: '/questions',
 };
 
+// Function to handle API requests
 const request = async (method, endpoint, body = null) => {
     //Input Validation
     const validMethods = ['GET', 'POST', 'PUT', 'DELETE'];
@@ -70,6 +70,12 @@ const validateNumber = (value, name, { min = -Infinity, max = Infinity, allowNul
     throw new Error(`Invalid ${name}. ${name} must be a number between ${min} and ${max}.`);
 };
 
+function validateString(input, fieldName) {
+    if (typeof input !== 'string' || input.trim() === '') {
+        throw new Error(`${fieldName} must be provided and cannot be empty.`);
+    }
+}
+
 
 export const getUserData = async (user_id) => {
     // Sanity Check: Validate user_id
@@ -100,10 +106,10 @@ export const updateUserProgress = async (user_id, level_index, score, total_scor
 
     const newProgress = {
         "user_id": user_id,
-        "level_index": level_index,
-        "level_score": score,
-        "total_score": total_score,
-        "hp": hp
+        "new_level_index": level_index,
+        "new_level_highscores": score,
+        "new_total_score": total_score,
+        "new_hp": hp
     }
 
     try {
@@ -117,13 +123,9 @@ export const updateUserProgress = async (user_id, level_index, score, total_scor
 
 
 export const handleLogin = async (username, password) => {
-    // Validate the inputs first
-    if (typeof username !== 'string' || username.trim() === '') {
-        throw new Error('Username must be provided.');
-    }
-    if (typeof password !== 'string' || password.trim() === '') {
-        throw new Error('Password must be provided.');
-    }
+    // Validate the inputs
+    validateString(username, 'Username');
+    validateString(password, 'Password');
 
     const endpoint = ENDPOINTS.LOGIN;
     try {
@@ -139,6 +141,9 @@ export const handleLogin = async (username, password) => {
 
 
 export const handleLogout = async (token) => {
+    // Validate the token
+    validateString(token, 'Token');
+
     // Construct the endpoint for logout
     const endpoint = ENDPOINTS.LOGOUT;
 
@@ -148,11 +153,15 @@ export const handleLogout = async (token) => {
 };
 
 export const handleRegister = async (username, password) => {
+    validateString(username,'User name')
+    validateString(password,'Password')
     const endpoint = ENDPOINTS.REGISTER;
     return await request('POST', endpoint, {username, password});
 };
 
 export const getLevel = async (level_index) => {
+    validateNumber(level_index,'Level index', {min : 0})
+    
     const endpoint = ENDPOINTS.QUESTIONS;
     const body = {
         "level_index": level_index
@@ -161,6 +170,12 @@ export const getLevel = async (level_index) => {
 };
 
 export const addQuestionsToDB = async (question_array) => {
+    // Validate the question array
+    if (!Array.isArray(question_array) || question_array.length === 0) {
+        throw new Error('Invalid input: questions must be a non-empty array.');
+    }
+    question_array.forEach(validateQuestion);
+
     const endpoint = ENDPOINTS.QUESTIONS;
     const body = {
         "questions": question_array
@@ -169,6 +184,9 @@ export const addQuestionsToDB = async (question_array) => {
 };
 
 export const setHP = async (user_id, new_hp) => {
+    //Validiate
+    validateString(user_id, 'User ID');
+
     const endpoint = ENDPOINTS.USER;
     const body = {
         "user_id": user_id,

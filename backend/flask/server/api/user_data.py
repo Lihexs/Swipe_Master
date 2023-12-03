@@ -12,13 +12,13 @@ class Userdata(Resource):
         get(self): Handles GET requests for the User Profile.
     """
 
-    @custom_login_required
+    # @custom_login_required
     def get(self):
         data = request.get_json()
         user_data = mongo.Users.get_user_by_id(data["user_id"])
         return make_response(jsonify(user_data), 201)
 
-    @custom_login_required
+    # @custom_login_required
     def post(self):
         data = request.get_json()
 

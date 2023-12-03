@@ -93,10 +93,19 @@ class Users(CollectionBase):
 
     @handle_exceptions
     def get_user_by_id(self, user_id: str):
-        res = self.collection.find_one({"user_id": ObjectId(user_id)})
+        projection = {
+            "_id": 0,  # Exclude the _id field
+            "user_id": 0,
+            "username": 0,
+            "password": 0,
+            "password_token": 0,
+            "role": 0,
+        }
+        res = self.collection.find_one({"user_id": ObjectId(user_id)}, projection)
         logger.info("get_user_by_id")
         return res
 
+    @handle_exceptions
     def get_user_by_username(self, username: str):
         res = self.collection.find_one({"username": username})
         logger.info("get_user_by_username")
@@ -107,13 +116,24 @@ class Users(CollectionBase):
                              new_total_score: int, new_hp: int):
         self.collection.update_one({"user_id": ObjectId(user_id)},
                                    {"$set":
-                                        {"levels_highscores.$": new_level_highscores,
-                                         "current_level.$": new_level_index,
-                                         "total_score.$": new_total_score, "current_hp.$": new_hp}})
+                                        {"levels_highscores": new_level_highscores,
+                                         "current_level": new_level_index,
+                                         "total_score": new_total_score,
+                                         "current_hp": new_hp}})
 
     @handle_exceptions
     def update_user_hp(self, user_id: str, new_hp: int):
-        self.collection.update_one({"user_id": ObjectId(user_id)}, {"$set": {"current_hp.$": new_hp}})
+        self.collection.update_one({"user_id": ObjectId(user_id)}, {"$set": {"current_hp": new_hp}})
+    
+    @handle_exceptions
+    def get_leaderboard(self, limit=10):
+        """
+        Get the top users based on their total scores.
+        :param limit: The number of top users to return.
+        """
+        return list(self.collection.find({}, {'_id': 0, 'username': 1, 'total_score': 1})
+                    .sort('total_score', -1)
+                    .limit(limit))
 
 
 # Questions collection class
@@ -175,7 +195,12 @@ class Questions(CollectionBase):
             if difficulty_distribution_sum == 100:
                 break
             num_questions = total_num_questions * difficulty_distribution[difficulty] // 100
-            difficulty_questions_lst = list(self.collection.find({"difficulty": difficulty}))
+            projection = {
+                "_id": 0,
+                "question_id": 0,
+                "difficulty": 0
+            }
+            difficulty_questions_lst = list(self.collection.find({"difficulty": difficulty}, projection))
             questions += random.sample(difficulty_questions_lst, num_questions)
             difficulty_distribution_sum += difficulty_distribution[difficulty]
         return questions

@@ -12,7 +12,7 @@ class Questions(Resource):
         if "level_index" not in data:
             return make_response(jsonify({"error": "Missing 'level_index' in the request data"}), 400)
 
-        new_lvl = Level(int(data["level_index"]))
+        new_lvl = Level(data["level_index"])
 
         total_num_questions = new_lvl.total_num_questions
         difficulty_distribution = new_lvl.difficulty_distribution
